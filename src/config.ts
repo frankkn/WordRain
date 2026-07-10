@@ -23,4 +23,9 @@ export const CONFIG = {
     comboBonus: 0.1, // +10% per consecutive word, capped below
     comboCap: 10,
   },
+  leaderboard: {
+    size: 10,
+    nameMaxLength: 12,
+    timeoutMs: 5000,
+  },
 } as const;
