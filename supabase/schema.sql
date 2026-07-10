@@ -6,10 +6,12 @@ create table leaderboard (
   name text not null check (char_length(trim(name)) between 1 and 12),
   country text not null check (country ~ '^[A-Z]{2}$'),
   score int not null check (score > 0 and score <= 1000000),
+  difficulty text not null default 'medium'
+    check (difficulty in ('easy', 'medium', 'hard')),
   created_at timestamptz not null default now()
 );
 
-create index on leaderboard (score desc);
+create index on leaderboard (difficulty, score desc);
 
 alter table leaderboard enable row level security;
 

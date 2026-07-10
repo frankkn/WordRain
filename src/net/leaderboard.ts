@@ -1,9 +1,10 @@
-import { CONFIG } from '../config';
+import { CONFIG, type DifficultyName } from '../config';
 
 export interface LeaderboardEntry {
   name: string;
   country: string; // ISO 3166-1 alpha-2, uppercase
   score: number;
+  difficulty: DifficultyName;
 }
 
 const BASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -22,10 +23,11 @@ function headers(): Record<string, string> {
   };
 }
 
-export async function fetchTop10(): Promise<LeaderboardEntry[]> {
+export async function fetchTop10(difficulty: DifficultyName): Promise<LeaderboardEntry[]> {
   const url =
     `${BASE_URL}/rest/v1/leaderboard` +
-    `?select=name,country,score&order=score.desc,created_at.asc&limit=${CONFIG.leaderboard.size}`;
+    `?select=name,country,score,difficulty&difficulty=eq.${difficulty}` +
+    `&order=score.desc,created_at.asc&limit=${CONFIG.leaderboard.size}`;
   const res = await fetch(url, {
     headers: headers(),
     signal: AbortSignal.timeout(CONFIG.leaderboard.timeoutMs),

@@ -55,7 +55,9 @@ export class GameOverState implements State {
 
     if (this.status !== 'unconfigured') {
       const boardTop = titleY + 76;
-      r.centerText('— World Top 10 —', boardTop, 15, { color: '#8fd0ff' });
+      r.centerText(`— World Top 10 · ${g.runDifficulty.toUpperCase()} —`, boardTop, 15, {
+        color: '#8fd0ff',
+      });
       const listTop = boardTop + 22;
       if (this.status === 'loading') {
         r.centerText('Loading…', listTop + 24, 14);
@@ -83,7 +85,7 @@ export class GameOverState implements State {
 
   private async loadBoard(offerSubmit: boolean): Promise<void> {
     try {
-      const entries = await fetchTop10();
+      const entries = await fetchTop10(this.game.runDifficulty);
       if (!this.game.isActive(this)) return; // player already moved on
       this.entries = entries;
       this.status = 'ready';
@@ -100,7 +102,12 @@ export class GameOverState implements State {
       async ({ name, country }) => {
         this.form.setBusy(true);
         try {
-          await submitScore({ name, country, score: this.game.score });
+          await submitScore({
+            name,
+            country,
+            score: this.game.score,
+            difficulty: this.game.runDifficulty,
+          });
           this.submitted = true;
           this.form.close();
           this.status = 'loading';
