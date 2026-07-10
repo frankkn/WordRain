@@ -1,4 +1,4 @@
-import { CONFIG } from '../config';
+import { CONFIG, DIFFICULTIES, type DifficultyName } from '../config';
 import { Music } from '../audio/Music';
 import { Sound } from '../audio/Sound';
 import { Drop } from '../entities/Drop';
@@ -32,6 +32,8 @@ export class Game {
   best = loadHighScore();
   newBest = false;
   time = 0; // global clock, drives the water wave
+  /** Snapshotted at run start so mid-game option changes can't mislabel the run. */
+  runDifficulty: DifficultyName = 'medium';
 
   private readonly states: Record<StateName, State>;
   private state: State;
@@ -88,7 +90,8 @@ export class Game {
     this.score = 0;
     this.combo = 0;
     this.newBest = false;
-    this.difficulty.reset();
+    this.runDifficulty = this.settings.difficulty;
+    this.difficulty.reset(DIFFICULTIES[this.runDifficulty]);
     this.spawner.reset();
     this.typing.reset();
     this.setState('playing');
@@ -122,7 +125,7 @@ export class Game {
     for (const d of this.drops) r.drawDrop(d, d === this.typing.locked);
     r.drawParticles(this.particles);
     r.drawWater(this.water, this.time);
-    r.drawHUD(this.score, this.best, this.combo);
+    r.drawHUD(this.score, this.best, this.combo, this.runDifficulty.toUpperCase());
   }
 
   private frame = (t: number): void => {

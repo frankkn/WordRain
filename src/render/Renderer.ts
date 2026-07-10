@@ -125,11 +125,14 @@ export class Renderer {
     ctx.restore();
   }
 
-  drawHUD(score: number, best: number, combo: number): void {
+  drawHUD(score: number, best: number, combo: number, difficulty: string): void {
     const { ctx } = this;
     ctx.save();
     ctx.font = `16px ${FONT}`;
     ctx.textBaseline = 'alphabetic';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#8fb8dd';
+    ctx.fillText(difficulty, this.width / 2, 26);
     ctx.textAlign = 'left';
     ctx.fillStyle = '#cfe8ff';
     ctx.fillText(`Score ${score}`, 14, 26);

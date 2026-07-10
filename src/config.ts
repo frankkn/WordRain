@@ -1,20 +1,49 @@
 export type DifficultyName = 'easy' | 'medium' | 'hard';
 
-// All gameplay tuning lives here.
+export interface DifficultyProfile {
+  baseSpeed: number;    // px/s at ramp start
+  maxSpeed: number;     // px/s at full ramp
+  baseInterval: number; // s between drops at ramp start
+  minInterval: number;  // s at full ramp
+  rampDuration: number; // s of survival to reach full ramp
+  lengthBias: number;   // >1 favors long words, <1 favors short (1 = medium)
+}
+
+export const DIFFICULTIES: Record<DifficultyName, DifficultyProfile> = {
+  easy: {
+    baseSpeed: 32,
+    maxSpeed: 100,
+    baseInterval: 2.6,
+    minInterval: 1.0,
+    rampDuration: 180,
+    lengthBias: 0.6,
+  },
+  medium: {
+    baseSpeed: 42,
+    maxSpeed: 150,
+    baseInterval: 2.2,
+    minInterval: 0.7,
+    rampDuration: 150,
+    lengthBias: 1,
+  },
+  hard: {
+    baseSpeed: 55,
+    maxSpeed: 200,
+    baseInterval: 1.8,
+    minInterval: 0.55,
+    rampDuration: 120,
+    lengthBias: 1.6,
+  },
+};
+
+// All non-difficulty gameplay tuning lives here.
 export const CONFIG = {
   drop: {
     fontSize: 22,     // px, monospace glyphs
     charWidth: 0.62,  // fraction of fontSize per character
-    baseSpeed: 42,    // px/s at difficulty 0
-    maxSpeed: 150,    // px/s at full difficulty
   },
   spawn: {
-    baseInterval: 2.2, // s between drops at difficulty 0
-    minInterval: 0.7,  // s at full difficulty
-    firstDelay: 0.8,   // s before the first drop of a run
-  },
-  difficulty: {
-    rampDuration: 150, // s of survival to reach full difficulty
+    firstDelay: 0.8, // s before the first drop of a run
   },
   water: {
     risePerMiss: 0.045,     // screen-height fraction added per missed drop
