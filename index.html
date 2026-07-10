@@ -5,85 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WordRain</title>
   <style>
-    html, body { margin: 0; height: 100%; background: #0b1a2b; overflow: hidden; font-family: monospace; }
-    #game { position: relative; width: 100vw; height: 100vh; }
-    .drop {
-      position: absolute;
-      color: #cfe8ff;
-      font-size: 24px;
-      text-shadow: 0 0 6px #4aa3ff;
-      user-select: none;
-    }
-    #water {
-      position: absolute;
-      left: 0; bottom: 0; width: 100%; height: 0;
-      background: rgba(74, 163, 255, 0.35);
-      transition: height 0.3s ease;
-    }
-    #hud {
-      position: absolute; top: 10px; left: 12px;
-      color: #cfe8ff; font-size: 16px; z-index: 10;
-    }
+    html, body { margin: 0; height: 100%; background: #0b1a2b; overflow: hidden; }
+    #game { display: block; width: 100vw; height: 100vh; }
   </style>
 </head>
 <body>
-  <div id="game">
-    <div id="hud">Score: <span id="score">0</span></div>
-    <div id="water"></div>
-  </div>
-
-  <script>
-    // WordRain — minimal prototype scaffold.
-    // Drops fall; press the matching key to clear them. Missed drops raise the water.
-    const game = document.getElementById('game');
-    const water = document.getElementById('water');
-    const scoreEl = document.getElementById('score');
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-    let score = 0;
-    let waterLevel = 0;
-    let speed = 1;          // px per frame, increases over time
-    let drops = [];
-
-    function spawnDrop() {
-      const el = document.createElement('div');
-      el.className = 'drop';
-      el.textContent = chars[Math.floor(Math.random() * chars.length)];
-      el.style.left = Math.random() * (window.innerWidth - 30) + 'px';
-      el.style.top = '-30px';
-      game.appendChild(el);
-      drops.push({ el, y: -30 });
-    }
-
-    function tick() {
-      for (const d of drops) {
-        d.y += speed;
-        d.el.style.top = d.y + 'px';
-        if (d.y > window.innerHeight - waterLevel) {
-          d.el.remove();
-          d.dead = true;
-          waterLevel = Math.min(window.innerHeight, waterLevel + 10);
-          water.style.height = waterLevel + 'px';
-        }
-      }
-      drops = drops.filter(d => !d.dead);
-      requestAnimationFrame(tick);
-    }
-
-    document.addEventListener('keydown', (e) => {
-      const key = e.key.toUpperCase();
-      const idx = drops.findIndex(d => d.el.textContent === key);
-      if (idx !== -1) {
-        drops[idx].el.remove();
-        drops.splice(idx, 1);
-        score++;
-        scoreEl.textContent = score;
-      }
-    });
-
-    setInterval(spawnDrop, 1200);
-    setInterval(() => { speed += 0.2; }, 5000); // rain speeds up over time
-    tick();
-  </script>
+  <canvas id="game"></canvas>
+  <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
