@@ -34,11 +34,16 @@ src/
 │   ├── TypingSystem.ts  # ZType 式鎖定:字首鎖最低的雨滴,錯字不重置進度只斷 combo
 │   ├── Spawner.ts       # 選字 + 生成節奏,避免與場上雨滴同字首(鎖定歧義)
 │   └── Difficulty.ts    # 隨存活時間提升落速/縮短間隔/偏向長字
-├── render/Renderer.ts   # 全部 canvas 繪製(雨滴、水面、粒子、HUD、overlay)、DPR 縮放
+├── render/Renderer.ts   # 全部 canvas 繪製(雨滴、水面、粒子、HUD、overlay、排行榜)、DPR 縮放
 ├── audio/Sound.ts       # Web Audio 合成音效(需使用者手勢後 unlock)
 ├── data/words.ts        # 字表,依長度分 short/medium/long 三級
+├── data/countries.ts    # ISO 3166 國家清單 + 國旗 emoji 換算 + 語系猜測
+├── net/leaderboard.ts   # 世界前 10 API client(純 fetch 打 Supabase PostgREST,無 SDK)
+├── ui/SubmitForm.ts     # 上榜留名 DOM 表單(原生 IME 輸入 + <select> 國家)
 └── storage/highscore.ts # localStorage 最高分
 ```
+
+世界排行榜:後端是 Supabase(schema 在 `supabase/schema.sql`),金鑰放 `.env.local`(樣板 `.env.example`,變數 `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`);env 沒設時功能整個優雅降級。結算畫面 fetch 前 10,夠格(不足 10 筆或嚴格大於第 10 名)才彈表單;表單開啟時鍵盤事件不進遊戲。注意:canvas 榜單只畫國家代碼不畫國旗 emoji — Windows Chrome 不支援國旗 emoji。分數由 client 提交,只有 DB sanity check,無防作弊。
 
 狀態流程:`Menu →(Enter)→ Playing ⇄(Esc)⇄ Paused;Playing →(水位滿)→ GameOver →(Enter)→ 重開 /(Esc)→ Menu`
 
@@ -57,12 +62,13 @@ src/
 | 7 | 最高分:localStorage 存取 + GameOver 畫面顯示 | ✅ |
 | 8 | 粒子特效與潤飾:消除爆散、落水水花、背景雨絲、窄視窗 overlay 縮放 | ✅ |
 | 9 | 文件:README 更新(玩法、指令、架構) | ✅ |
+| 10 | 世界排行榜前 10:Supabase 後端、結算留名(名字+國家)、榜單渲染、優雅降級 | ✅(待接真實金鑰驗證) |
 
 ### 未來可能的方向(未排程)
 
 - 行動裝置輸入(虛擬鍵盤 / 觸控)
 - 多字表主題包或難度選擇(單字母模式)
-- 本地排行榜(多筆紀錄,不只最高分)
+- 部署到 Vercel/Netlify(使用者已選定方向)
 
 ## 驗證方式
 

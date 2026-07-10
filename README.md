@@ -9,6 +9,7 @@ A typing game where words fall from the sky like rain. Each raindrop carries a w
 - Wrong letters break your combo but never reset your progress.
 - Missed drops raise the water level — at 40% the screen floods and the run ends.
 - Score scales with word length and consecutive-word combos. Your best score is saved locally.
+- Make the **world top 10** and you can leave your name and country on the global leaderboard.
 
 **Controls:** letters to type · `Enter` start / restart · `Esc` pause / menu
 
@@ -21,6 +22,16 @@ npm run build    # type-check + production build to dist/
 npm run preview  # serve the production build
 ```
 
+### World leaderboard (optional)
+
+The global top 10 is backed by [Supabase](https://supabase.com) (free tier). Without it the game still works — the leaderboard section just doesn't appear.
+
+1. Create a Supabase project and run `supabase/schema.sql` in the SQL Editor.
+2. Copy `.env.example` to `.env.local` and fill in the project URL and anon key (Project Settings → API).
+3. When deploying (Vercel/Netlify), set the same `VITE_SUPABASE_*` environment variables in the dashboard.
+
+Scores are submitted from the client, so the database only enforces sanity checks (name length, ISO country code, score cap) — fine for a casual game, not tamper-proof.
+
 ## Architecture
 
 Vite + TypeScript, rendered on a single 2D canvas. See `src/`:
@@ -32,6 +43,8 @@ Vite + TypeScript, rendered on a single 2D canvas. See `src/`:
 - `render/Renderer.ts` — all canvas drawing (drops, water, HUD, overlays)
 - `audio/Sound.ts` — Web Audio synthesized sfx (no asset files)
 - `data/words.ts` — word pools by length tier
+- `net/leaderboard.ts` — world top-10 client (plain fetch to Supabase PostgREST)
+- `ui/SubmitForm.ts` — DOM overlay form for name + country entry
 - `storage/highscore.ts` — localStorage best score
 - `config.ts` — every gameplay tuning knob in one place
 
