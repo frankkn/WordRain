@@ -1,6 +1,7 @@
 import { CONFIG } from '../config';
 import type { Drop } from '../entities/Drop';
 import type { Particle } from '../entities/Particle';
+import type { LeaderboardEntry } from '../net/leaderboard';
 
 export interface RainStreak {
   x: number;
@@ -142,12 +143,73 @@ export class Renderer {
     ctx.restore();
   }
 
+  /** Full-screen dimming layer under menus and results. */
+  dim(alpha = 0.55): void {
+    this.ctx.fillStyle = `rgba(4, 10, 18, ${alpha})`;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+  }
+
+  /** One horizontally centered line of text. */
+  centerText(
+    text: string,
+    y: number,
+    size: number,
+    opts: { bold?: boolean; glow?: boolean; color?: string } = {},
+  ): void {
+    const { ctx } = this;
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    if (opts.glow) {
+      ctx.shadowColor = '#4aa3ff';
+      ctx.shadowBlur = 18;
+    }
+    ctx.fillStyle = opts.color ?? '#e8f4ff';
+    ctx.font = `${opts.bold ? 'bold ' : ''}${size}px ${FONT}`;
+    ctx.fillText(text, this.width / 2, y);
+    ctx.restore();
+  }
+
+  /**
+   * Top-10 table. Country is shown as its two-letter code — flag emoji
+   * are unavailable on Windows Chrome, where they fall back to letters.
+   */
+  drawLeaderboard(entries: LeaderboardEntry[], yTop: number, rowH: number, highlight = -1): void {
+    const { ctx } = this;
+    const boardW = Math.min(480, this.width * 0.92);
+    const x0 = (this.width - boardW) / 2;
+    const fontSize = Math.max(11, Math.min(16, rowH * 0.62));
+
+    ctx.save();
+    ctx.textBaseline = 'middle';
+    ctx.font = `${fontSize}px ${FONT}`;
+    entries.forEach((e, i) => {
+      const y = yTop + i * rowH + rowH / 2;
+      if (i === highlight) {
+        ctx.fillStyle = 'rgba(255, 209, 102, 0.15)';
+        ctx.beginPath();
+        ctx.roundRect(x0 - 8, yTop + i * rowH, boardW + 16, rowH, 6);
+        ctx.fill();
+      }
+      ctx.fillStyle = i === highlight ? '#ffd166' : '#cfe8ff';
+      ctx.textAlign = 'right';
+      ctx.fillText(`${i + 1}.`, x0 + 28, y);
+      ctx.textAlign = 'left';
+      ctx.fillStyle = i === highlight ? '#ffd166' : '#8fb8dd';
+      ctx.fillText(e.country, x0 + 44, y);
+      ctx.fillStyle = i === highlight ? '#ffd166' : '#cfe8ff';
+      ctx.fillText(e.name, x0 + 84, y);
+      ctx.textAlign = 'right';
+      ctx.fillText(String(e.score), x0 + boardW, y);
+    });
+    ctx.restore();
+  }
+
   /** Dimmed full-screen overlay with a title and info lines (menus). */
   overlay(title: string, lines: string[], dim = 0.55): void {
     const { ctx } = this;
     ctx.save();
-    ctx.fillStyle = `rgba(4, 10, 18, ${dim})`;
-    ctx.fillRect(0, 0, this.width, this.height);
+    this.dim(dim);
 
     // Scale type down on narrow viewports so nothing overflows.
     const titleSize = Math.min(54, (this.width * 0.9) / (title.length * 0.62));

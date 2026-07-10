@@ -61,6 +61,11 @@ export class Game {
     this.state.enter?.();
   }
 
+  /** Lets async work (leaderboard fetches) check it still owns the screen. */
+  isActive(state: State): boolean {
+    return this.state === state;
+  }
+
   /** Reset per-run state and begin playing. */
   startRun(): void {
     this.drops = [];

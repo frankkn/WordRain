@@ -7,6 +7,42 @@
   <style>
     html, body { margin: 0; height: 100%; background: #0b1a2b; overflow: hidden; }
     #game { display: block; width: 100vw; height: 100vh; }
+
+    /* Leaderboard submit form (built by src/ui/SubmitForm.ts) */
+    #submit-form {
+      position: fixed; inset: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: center;
+      font-family: Consolas, 'Courier New', monospace;
+    }
+    #submit-form .panel {
+      background: #0d2136;
+      border: 1px solid rgba(74, 163, 255, 0.45);
+      border-radius: 10px;
+      padding: 24px 28px;
+      width: min(320px, 86vw);
+      box-shadow: 0 0 30px rgba(74, 163, 255, 0.25);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    #submit-form h2 { margin: 0; color: #ffd166; font-size: 20px; text-align: center; }
+    #submit-form p { margin: 0; color: #cfe8ff; font-size: 13px; text-align: center; }
+    #submit-form input, #submit-form select {
+      font: inherit; color: #e8f4ff; background: #081420;
+      border: 1px solid rgba(120, 180, 255, 0.35);
+      border-radius: 6px; padding: 8px 10px;
+    }
+    #submit-form input:focus, #submit-form select:focus { outline: 1px solid #4aa3ff; }
+    #submit-form .row { display: flex; gap: 10px; }
+    #submit-form button {
+      flex: 1; font: inherit; font-weight: bold;
+      padding: 8px 0; border: none; border-radius: 6px; cursor: pointer;
+      background: #4aa3ff; color: #04101c;
+    }
+    #submit-form button.secondary {
+      background: transparent; color: #8fb8dd; font-weight: normal;
+      border: 1px solid rgba(120, 180, 255, 0.35);
+    }
+    #submit-form button:disabled { opacity: 0.5; cursor: default; }
+    #submit-form .error { color: #ff9f9f; min-height: 16px; }
   </style>
 </head>
 <body>
