@@ -63,10 +63,10 @@ src/
 | 8 | 粒子特效與潤飾:消除爆散、落水水花、背景雨絲、窄視窗 overlay 縮放 | ✅ |
 | 9 | 文件:README 更新(玩法、指令、架構) | ✅ |
 | 10 | 世界排行榜前 10:Supabase 後端、結算留名(名字+國家)、榜單渲染、優雅降級 | ✅(已接真實後端驗證;金鑰在 .env.local,不進 git) |
-| 11 | 設定持久化與雙路音訊:settings.ts、Sound master gain、Music.ts(BGM 播放系統) | 🚧 |
-| 12 | 難度系統:EASY/MEDIUM/HARD 三組參數、runDifficulty 快照、HUD 顯示 | 🚧 |
-| 13 | 主選單系統:↑↓ 選單(NEW GAME/LEADERBOARDS/OPTIONS/EXIT)、OPTIONS 頁、EXIT 告別畫面 | 🚧 |
-| 14 | 分難度排行榜:DB migration、API 帶 difficulty、LEADERBOARDS 頁(←/→ 切 EASY/MEDIUM/HARD) | 🚧 |
+| 11 | 設定持久化與雙路音訊:settings.ts、Sound master gain、Music.ts(BGM 播放系統) | ✅(BGM 檔案待使用者用 Suno 生成放入 public/audio/bgm.mp3) |
+| 12 | 難度系統:EASY/MEDIUM/HARD 三組參數、runDifficulty 快照、HUD 顯示 | ✅ |
+| 13 | 主選單系統:↑↓ 選單(NEW GAME/LEADERBOARDS/OPTIONS/EXIT)、OPTIONS 頁、EXIT 告別畫面 | ✅ |
+| 14 | 分難度排行榜:DB migration、API 帶 difficulty、LEADERBOARDS 頁(←/→ 切 EASY/MEDIUM/HARD) | ✅(migration-002 待使用者在 Supabase SQL Editor 執行) |
 
 ### Phase 11–14 需求細節(2026-07-11 使用者提出)
 

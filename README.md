@@ -9,9 +9,17 @@ A typing game where words fall from the sky like rain. Each raindrop carries a w
 - Wrong letters break your combo but never reset your progress.
 - Missed drops raise the water level — at 40% the screen floods and the run ends.
 - Score scales with word length and consecutive-word combos. Your best score is saved locally.
-- Make the **world top 10** and you can leave your name and country on the global leaderboard.
+- Three difficulties (EASY / MEDIUM / HARD) with separate world leaderboards — make the top 10 and leave your name and country.
 
-**Controls:** letters to type · `Enter` start / restart · `Esc` pause / menu
+**Controls:** `↑↓` navigate menus · `←→` adjust options / switch leaderboard tabs · `Enter` confirm / restart · `Esc` pause / back · letters to type
+
+**Options** (persisted locally): music volume, sound volume, difficulty.
+
+### Background music
+
+Drop a looping track at `public/audio/bgm.mp3` and the game plays it automatically (volume controlled in OPTIONS). No file → no music, everything else works. Suggested Suno prompt:
+
+> Calm ambient instrumental, rainy night atmosphere, soft warm synth pads, gentle piano notes like water droplets, light rain in the background, slow tempo around 70 BPM, no vocals, no drums, meditative and relaxing, background music for a typing game, seamless loop
 
 ## Development
 
@@ -27,8 +35,11 @@ npm run preview  # serve the production build
 The global top 10 is backed by [Supabase](https://supabase.com) (free tier). Without it the game still works — the leaderboard section just doesn't appear.
 
 1. Create a Supabase project and run `supabase/schema.sql` in the SQL Editor.
+   (Projects created before the difficulty tiers also need `supabase/migration-002-difficulty.sql`.)
 2. Copy `.env.example` to `.env.local` and fill in the project URL and anon key (Project Settings → API).
 3. When deploying (Vercel/Netlify), set the same `VITE_SUPABASE_*` environment variables in the dashboard.
+
+Each difficulty has its own top-10 board; scores are submitted with the difficulty the run was started on.
 
 Scores are submitted from the client, so the database only enforces sanity checks (name length, ISO country code, score cap) — fine for a casual game, not tamper-proof.
 
