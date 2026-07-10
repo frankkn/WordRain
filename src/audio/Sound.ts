@@ -1,12 +1,23 @@
 /** All sfx are synthesized with Web Audio — no asset files. */
 export class Sound {
   private ctx: AudioContext | null = null;
+  private master: GainNode | null = null;
+  private volume = 0.5; // 0–1, set via setVolume
+
+  /** level 0–10, perceptual curve. Applies live to all sfx. */
+  setVolume(level: number): void {
+    this.volume = (level / 10) ** 2;
+    if (this.master) this.master.gain.value = this.volume;
+  }
 
   /** Must be called from a user gesture before anything can play. */
   unlock(): void {
     if (!this.ctx) {
       try {
         this.ctx = new AudioContext();
+        this.master = this.ctx.createGain();
+        this.master.gain.value = this.volume;
+        this.master.connect(this.ctx.destination);
       } catch {
         return; // No audio support; game stays silent.
       }
@@ -36,6 +47,18 @@ export class Sound {
     this.noise(0.8, 0.1, 500);
   }
 
+  menuMove(): void {
+    this.tone(500, 0.045, 'square', 0.05);
+  }
+
+  menuSelect(): void {
+    this.tone(660, 0.09, 'triangle', 0.1, 880);
+  }
+
+  menuBack(): void {
+    this.tone(440, 0.07, 'triangle', 0.08, 330);
+  }
+
   private tone(
     freq: number,
     dur: number,
@@ -45,7 +68,7 @@ export class Sound {
     delay = 0,
   ): void {
     const ctx = this.ctx;
-    if (!ctx || ctx.state !== 'running') return;
+    if (!ctx || !this.master || ctx.state !== 'running') return;
     const t = ctx.currentTime + delay;
     const osc = ctx.createOscillator();
     const g = ctx.createGain();
@@ -54,14 +77,14 @@ export class Sound {
     if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
     g.gain.setValueAtTime(gain, t);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    osc.connect(g).connect(ctx.destination);
+    osc.connect(g).connect(this.master);
     osc.start(t);
     osc.stop(t + dur);
   }
 
   private noise(dur: number, gain: number, cutoff: number): void {
     const ctx = this.ctx;
-    if (!ctx || ctx.state !== 'running') return;
+    if (!ctx || !this.master || ctx.state !== 'running') return;
     const length = Math.max(1, Math.floor(ctx.sampleRate * dur));
     const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -76,7 +99,7 @@ export class Sound {
     const t = ctx.currentTime;
     g.gain.setValueAtTime(gain, t);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    src.connect(filter).connect(g).connect(ctx.destination);
+    src.connect(filter).connect(g).connect(this.master);
     src.start(t);
   }
 }

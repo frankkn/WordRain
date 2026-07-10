@@ -1,3 +1,5 @@
+export type DifficultyName = 'easy' | 'medium' | 'hard';
+
 // All gameplay tuning lives here.
 export const CONFIG = {
   drop: {

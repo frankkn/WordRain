@@ -1,9 +1,11 @@
 import { CONFIG } from '../config';
+import { Music } from '../audio/Music';
 import { Sound } from '../audio/Sound';
 import { Drop } from '../entities/Drop';
 import { Particle } from '../entities/Particle';
 import { Renderer, type RainStreak } from '../render/Renderer';
 import { loadHighScore, saveHighScore } from '../storage/highscore';
+import { loadSettings, saveSettings, type Settings } from '../storage/settings';
 import { Difficulty } from '../systems/Difficulty';
 import { Spawner } from '../systems/Spawner';
 import { TypingSystem } from '../systems/TypingSystem';
@@ -16,9 +18,11 @@ import { GameOverState } from './states/GameOverState';
 export class Game {
   readonly renderer: Renderer;
   readonly sound = new Sound();
+  readonly music = new Music();
   readonly typing = new TypingSystem();
   readonly spawner = new Spawner();
   readonly difficulty = new Difficulty();
+  readonly settings: Settings = loadSettings();
 
   drops: Drop[] = [];
   particles: Particle[] = [];
@@ -43,10 +47,20 @@ export class Game {
       gameover: new GameOverState(this),
     };
     this.state = this.states.menu;
+    this.sound.setVolume(this.settings.sound);
+    this.music.setVolume(this.settings.music);
     window.addEventListener('keydown', (e) => {
       this.sound.unlock();
+      this.music.start();
       this.state.onKey(e);
     });
+  }
+
+  /** Persist the (already mutated) settings and apply the audio volumes. */
+  applySettings(): void {
+    this.sound.setVolume(this.settings.sound);
+    this.music.setVolume(this.settings.music);
+    saveSettings(this.settings);
   }
 
   start(): void {
