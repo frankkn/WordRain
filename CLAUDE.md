@@ -63,6 +63,23 @@ src/
 | 8 | 粒子特效與潤飾:消除爆散、落水水花、背景雨絲、窄視窗 overlay 縮放 | ✅ |
 | 9 | 文件:README 更新(玩法、指令、架構) | ✅ |
 | 10 | 世界排行榜前 10:Supabase 後端、結算留名(名字+國家)、榜單渲染、優雅降級 | ✅(已接真實後端驗證;金鑰在 .env.local,不進 git) |
+| 11 | 設定持久化與雙路音訊:settings.ts、Sound master gain、Music.ts(BGM 播放系統) | 🚧 |
+| 12 | 難度系統:EASY/MEDIUM/HARD 三組參數、runDifficulty 快照、HUD 顯示 | 🚧 |
+| 13 | 主選單系統:↑↓ 選單(NEW GAME/LEADERBOARDS/OPTIONS/EXIT)、OPTIONS 頁、EXIT 告別畫面 | 🚧 |
+| 14 | 分難度排行榜:DB migration、API 帶 difficulty、LEADERBOARDS 頁(←/→ 切 EASY/MEDIUM/HARD) | 🚧 |
+
+### Phase 11–14 需求細節(2026-07-11 使用者提出)
+
+- **主選單**:首頁改成選單式,↑/↓(含 W/S)選擇、Enter 確認,四個項目:
+  `NEW GAME / LEADERBOARDS / OPTIONS / EXIT`
+- **OPTIONS**:MUSIC 音量(+/−,0–10)、SOUND 音量(+/−,0–10)、DIFFICULTY(EASY/MEDIUM/HARD)
+  → 音訊分成音樂、音效兩路,各自獨立音量;設定存 localStorage(`wordrain.settings`)
+- **BGM**:使用者用 Suno AI 生成 mp3,放 **`public/audio/bgm.mp3`**;檔案不存在時音樂功能靜默降級,遊戲照常
+- **難度**:影響落速、生成間隔、難度曲線速度、長字權重(參數在 config.ts,現行數值 = MEDIUM);
+  開局時快照到 `Game.runDifficulty`,結算送榜用快照值(避免中途改設定送錯榜)
+- **排行榜分難度**:leaderboard 表加 `difficulty` 欄位(migration 在 `supabase/migration-002-difficulty.sql`,
+  需在 Supabase SQL Editor 手動跑);EASY/MEDIUM/HARD 三張榜互不相干;舊資料自動歸 medium
+- **EXIT**:先試 `window.close()`(瀏覽器多半會擋),fallback 顯示告別畫面,按任意鍵回選單
 
 ### 未來可能的方向(未排程)
 
