@@ -1,4 +1,11 @@
-export type StateName = 'menu' | 'playing' | 'paused' | 'gameover';
+export type StateName =
+  | 'menu'
+  | 'playing'
+  | 'paused'
+  | 'gameover'
+  | 'leaderboards'
+  | 'options'
+  | 'exit';
 
 export interface State {
   enter?(): void;

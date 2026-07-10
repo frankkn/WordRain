@@ -208,6 +208,30 @@ export class Renderer {
     ctx.restore();
   }
 
+  /** Vertical list menu with a highlighted selection. */
+  drawMenu(items: string[], selected: number, yTop: number, rowH: number): void {
+    const { ctx } = this;
+    ctx.save();
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    items.forEach((item, i) => {
+      const y = yTop + i * rowH + rowH / 2;
+      if (i === selected) {
+        ctx.font = `bold 20px ${FONT}`;
+        ctx.shadowColor = '#4aa3ff';
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = '#ffd166';
+        ctx.fillText(`▶ ${item} ◀`, this.width / 2, y);
+        ctx.shadowBlur = 0;
+      } else {
+        ctx.font = `20px ${FONT}`;
+        ctx.fillStyle = '#cfe8ff';
+        ctx.fillText(item, this.width / 2, y);
+      }
+    });
+    ctx.restore();
+  }
+
   /** Dimmed full-screen overlay with a title and info lines (menus). */
   overlay(title: string, lines: string[], dim = 0.55): void {
     const { ctx } = this;

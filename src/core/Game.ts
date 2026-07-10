@@ -14,6 +14,9 @@ import { MenuState } from './states/MenuState';
 import { PlayingState } from './states/PlayingState';
 import { PausedState } from './states/PausedState';
 import { GameOverState } from './states/GameOverState';
+import { LeaderboardsState } from './states/LeaderboardsState';
+import { OptionsState } from './states/OptionsState';
+import { ExitState } from './states/ExitState';
 
 export class Game {
   readonly renderer: Renderer;
@@ -47,6 +50,9 @@ export class Game {
       playing: new PlayingState(this),
       paused: new PausedState(this),
       gameover: new GameOverState(this),
+      leaderboards: new LeaderboardsState(this),
+      options: new OptionsState(this),
+      exit: new ExitState(this),
     };
     this.state = this.states.menu;
     this.sound.setVolume(this.settings.sound);
