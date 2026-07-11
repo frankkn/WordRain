@@ -69,6 +69,12 @@ export class Game {
       this.music.start();
       this.state.onKey(e);
     });
+    // Losing window focus (alt-tab, other monitor) keeps rAF running but
+    // keystrokes stop arriving — drops would drown unanswered. Auto-pause.
+    // (A hidden tab is already safe: rAF stops and dt is clamped on return.)
+    window.addEventListener('blur', () => {
+      if (this.state === this.states.playing) this.setState('paused');
+    });
   }
 
   toggleMute(): void {
