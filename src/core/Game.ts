@@ -6,6 +6,7 @@ import { Particle } from '../entities/Particle';
 import { Renderer, type RainStreak } from '../render/Renderer';
 import { loadHighScore, saveHighScore } from '../storage/highscore';
 import { loadSettings, saveSettings, type Settings } from '../storage/settings';
+import { MuteButton } from '../ui/MuteButton';
 import { Difficulty } from '../systems/Difficulty';
 import { Spawner } from '../systems/Spawner';
 import { TypingSystem } from '../systems/TypingSystem';
@@ -26,6 +27,7 @@ export class Game {
   readonly spawner = new Spawner();
   readonly difficulty = new Difficulty();
   readonly settings: Settings = loadSettings();
+  private readonly muteButton: MuteButton;
 
   drops: Drop[] = [];
   particles: Particle[] = [];
@@ -57,8 +59,8 @@ export class Game {
       exit: new ExitState(this),
     };
     this.state = this.states.menu;
-    this.sound.setVolume(this.settings.sound);
-    this.music.setVolume(this.settings.music);
+    this.muteButton = new MuteButton(this.settings.muted, () => this.toggleMute());
+    this.applyVolumes();
     window.addEventListener('keydown', (e) => {
       this.sound.unlock();
       this.music.start();
@@ -66,11 +68,22 @@ export class Game {
     });
   }
 
+  toggleMute(): void {
+    this.settings.muted = !this.settings.muted;
+    this.muteButton.sync(this.settings.muted);
+    this.applySettings();
+  }
+
   /** Persist the (already mutated) settings and apply the audio volumes. */
   applySettings(): void {
-    this.sound.setVolume(this.settings.sound);
-    this.music.setVolume(this.settings.music);
+    this.applyVolumes();
     saveSettings(this.settings);
+  }
+
+  private applyVolumes(): void {
+    const { muted, sound, music } = this.settings;
+    this.sound.setVolume(muted ? 0 : sound);
+    this.music.setVolume(muted ? 0 : music);
   }
 
   start(): void {

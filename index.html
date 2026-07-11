@@ -43,6 +43,19 @@
     }
     #submit-form button:disabled { opacity: 0.5; cursor: default; }
     #submit-form .error { color: #ff9f9f; min-height: 16px; }
+
+    /* Mute toggle (built by src/ui/MuteButton.ts) */
+    #mute-button {
+      position: fixed; top: 10px; right: 12px; z-index: 15;
+      width: 36px; height: 36px;
+      font-size: 18px; line-height: 1;
+      background: rgba(20, 50, 80, 0.55);
+      border: 1px solid rgba(120, 180, 255, 0.35);
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 0;
+    }
+    #mute-button:hover { background: rgba(74, 163, 255, 0.35); }
   </style>
 </head>
 <body>

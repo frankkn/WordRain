@@ -142,7 +142,7 @@ export class Renderer {
     }
     ctx.textAlign = 'right';
     ctx.fillStyle = '#cfe8ff';
-    ctx.fillText(`Best ${best}`, this.width - 14, 26);
+    ctx.fillText(`Best ${best}`, this.width - 58, 26); // clears the mute button
     ctx.restore();
   }
 

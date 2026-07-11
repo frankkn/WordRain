@@ -4,10 +4,11 @@ export interface Settings {
   music: number; // 0–10
   sound: number; // 0–10
   difficulty: DifficultyName;
+  muted: boolean;
 }
 
 const KEY = 'wordrain.settings';
-const DEFAULTS: Settings = { music: 7, sound: 7, difficulty: 'medium' };
+const DEFAULTS: Settings = { music: 7, sound: 7, difficulty: 'medium', muted: false };
 
 function clampVolume(v: unknown): number {
   const n = typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : 7;
@@ -26,6 +27,7 @@ export function loadSettings(): Settings {
         parsed.difficulty === 'easy' || parsed.difficulty === 'hard'
           ? parsed.difficulty
           : 'medium',
+      muted: parsed.muted === true,
     };
   } catch {
     return { ...DEFAULTS };
