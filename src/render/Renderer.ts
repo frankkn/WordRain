@@ -201,11 +201,25 @@ export class Renderer {
       ctx.fillStyle = i === highlight ? '#ffd166' : '#8fb8dd';
       ctx.fillText(e.country, x0 + 44, y);
       ctx.fillStyle = i === highlight ? '#ffd166' : '#cfe8ff';
-      ctx.fillText(e.name, x0 + 84, y);
+      // Names longer than our own 12-char form limit can arrive from other
+      // clients — clip them so they never overlap the score column.
+      const score = String(e.score);
+      const nameMaxW = boardW - 84 - ctx.measureText(score).width - 12;
+      ctx.fillText(this.truncateToWidth(e.name, nameMaxW), x0 + 84, y);
       ctx.textAlign = 'right';
-      ctx.fillText(String(e.score), x0 + boardW, y);
+      ctx.fillText(score, x0 + boardW, y);
     });
     ctx.restore();
+  }
+
+  /** Trims text (with …) to fit maxWidth under the current ctx font. */
+  private truncateToWidth(text: string, maxWidth: number): string {
+    if (this.ctx.measureText(text).width <= maxWidth) return text;
+    let t = text;
+    while (t.length > 1 && this.ctx.measureText(`${t}…`).width > maxWidth) {
+      t = t.slice(0, -1);
+    }
+    return `${t}…`;
   }
 
   /**
