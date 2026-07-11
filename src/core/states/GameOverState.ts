@@ -89,6 +89,9 @@ export class GameOverState implements State {
   }
 
   onKey(e: KeyboardEvent): void {
+    // A held Enter (e.g. the one that submitted the form) must not restart
+    // the run before the player sees the board.
+    if (e.repeat) return;
     if (this.form.isOpen) {
       // Focus is outside the form (backdrop click) — still let Esc skip it.
       if (e.key === 'Escape') this.form.cancel();
