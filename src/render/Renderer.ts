@@ -208,6 +208,42 @@ export class Renderer {
     ctx.restore();
   }
 
+  /**
+   * Fixed typing indicator above the waterline: always shows the locked
+   * word and progress so the player never loses track of the target.
+   */
+  drawTypingIndicator(word: string, typed: number, y: number): void {
+    const { ctx } = this;
+    const fs = 28;
+    const charW = fs * CONFIG.drop.charWidth;
+    const w = word.length * charW;
+    const x0 = this.width / 2 - w / 2;
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(8, 20, 32, 0.85)';
+    ctx.beginPath();
+    ctx.roundRect(x0 - 14, y - fs * 0.85, w + 28, fs * 1.7, 10);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(74, 163, 255, 0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.font = `bold ${fs}px ${FONT}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i < word.length; i++) {
+      ctx.fillStyle = i < typed ? '#57e389' : i === typed ? '#ffd166' : '#e8f4ff';
+      ctx.fillText(word[i], x0 + charW * (i + 0.5), y);
+    }
+    ctx.restore();
+  }
+
+  /** Red vignette flash (target drowned). strength 0→1. */
+  flashRed(strength: number): void {
+    this.ctx.fillStyle = `rgba(255, 70, 70, ${0.2 * strength})`;
+    this.ctx.fillRect(0, 0, this.width, this.height);
+  }
+
   /** Vertical list menu with a highlighted selection. */
   drawMenu(items: string[], selected: number, yTop: number, rowH: number): void {
     const { ctx } = this;

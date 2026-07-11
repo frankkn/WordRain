@@ -67,6 +67,7 @@ src/
 | 12 | 難度系統:EASY/MEDIUM/HARD 三組參數、runDifficulty 快照、HUD 顯示 | ✅ |
 | 13 | 主選單系統:↑↓ 選單(NEW GAME/LEADERBOARDS/OPTIONS/EXIT)、OPTIONS 頁、EXIT 告別畫面 | ✅ |
 | 14 | 分難度排行榜:DB migration、API 帶 difficulty、LEADERBOARDS 頁(←/→ 切 EASY/MEDIUM/HARD) | ✅(migration-002 待使用者在 Supabase SQL Editor 執行) |
+| 15 | 手感改善:水面上方固定打字指示器、鎖定目標落水回饋(紅閃+音效)與 0.35s 誤鎖保護 | ✅ |
 
 ### Phase 11–14 需求細節(2026-07-11 使用者提出)
 

@@ -42,6 +42,12 @@ export class Sound {
     this.noise(0.25, 0.18, 900);
   }
 
+  /** The word you were typing just drowned — harsher than a plain splash. */
+  lockLost(): void {
+    this.tone(300, 0.3, 'sawtooth', 0.1, 90);
+    this.noise(0.3, 0.14, 700);
+  }
+
   gameover(): void {
     this.tone(440, 0.7, 'triangle', 0.12, 110);
     this.noise(0.8, 0.1, 500);

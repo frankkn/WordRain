@@ -18,12 +18,18 @@ export class PlayingState implements State {
     const waterTop = g.waterTop;
     const landed = g.drops.filter((d) => d.y >= waterTop);
     if (landed.length > 0) {
+      const lostLock = g.typing.locked !== null && landed.includes(g.typing.locked);
       g.drops = g.drops.filter((d) => d.y < waterTop);
       g.combo = 0;
       for (const d of landed) {
         g.water = Math.min(1, g.water + CONFIG.water.risePerMiss);
         g.particles.push(...splash(d.x, waterTop));
         g.sound.splash();
+      }
+      if (lostLock) {
+        g.typing.notifyLockLost(g.time, CONFIG.typing.lockLostBlockSeconds);
+        g.lockLostFlash = CONFIG.typing.lockLostFlashSeconds;
+        g.sound.lockLost();
       }
     }
 
@@ -45,7 +51,7 @@ export class PlayingState implements State {
     }
     if (e.key.length !== 1 || !/[a-z]/i.test(e.key)) return;
 
-    const ev = g.typing.handleChar(e.key, g.drops);
+    const ev = g.typing.handleChar(e.key, g.drops, g.time);
     switch (ev.kind) {
       case 'complete': {
         const drop = ev.drop!;
@@ -61,6 +67,9 @@ export class PlayingState implements State {
       case 'miss':
         g.combo = 0;
         g.sound.miss();
+        break;
+      case 'blocked':
+        // Leftover keystrokes for the drowned word — swallowed silently.
         break;
     }
   }

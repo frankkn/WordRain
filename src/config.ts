@@ -49,6 +49,10 @@ export const CONFIG = {
     risePerMiss: 0.045,     // screen-height fraction added per missed drop
     gameOverFraction: 0.4,  // water level that ends the run
   },
+  typing: {
+    lockLostBlockSeconds: 0.35, // ignore lock-on keys after the target drowns
+    lockLostFlashSeconds: 0.3,  // red screen flash when the target drowns
+  },
   score: {
     perChar: 10,
     comboBonus: 0.1, // +10% per consecutive word, capped below

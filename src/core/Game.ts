@@ -37,6 +37,8 @@ export class Game {
   time = 0; // global clock, drives the water wave
   /** Snapshotted at run start so mid-game option changes can't mislabel the run. */
   runDifficulty: DifficultyName = 'medium';
+  /** Countdown for the red flash after the locked target drowns. */
+  lockLostFlash = 0;
 
   private readonly states: Record<StateName, State>;
   private state: State;
@@ -96,6 +98,7 @@ export class Game {
     this.score = 0;
     this.combo = 0;
     this.newBest = false;
+    this.lockLostFlash = 0;
     this.runDifficulty = this.settings.difficulty;
     this.difficulty.reset(DIFFICULTIES[this.runDifficulty]);
     this.spawner.reset();
@@ -131,6 +134,13 @@ export class Game {
     for (const d of this.drops) r.drawDrop(d, d === this.typing.locked);
     r.drawParticles(this.particles);
     r.drawWater(this.water, this.time);
+    const locked = this.typing.locked;
+    if (locked && !locked.done && this.drops.includes(locked)) {
+      r.drawTypingIndicator(locked.word, locked.typed, this.waterTop - 36);
+    }
+    if (this.lockLostFlash > 0) {
+      r.flashRed(this.lockLostFlash / CONFIG.typing.lockLostFlashSeconds);
+    }
     r.drawHUD(this.score, this.best, this.combo, this.runDifficulty.toUpperCase());
   }
 
@@ -138,6 +148,7 @@ export class Game {
     const dt = Math.min(0.05, (t - this.lastT) / 1000); // clamp tab-switch spikes
     this.lastT = t;
     this.time += dt;
+    this.lockLostFlash = Math.max(0, this.lockLostFlash - dt);
 
     this.updateAmbience(dt);
     this.state.update(dt);
