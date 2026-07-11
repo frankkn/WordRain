@@ -26,7 +26,10 @@ export class Spawner {
 
     const wordWidth = word.length * CONFIG.drop.fontSize * CONFIG.drop.charWidth;
     const margin = wordWidth / 2 + 16;
-    const x = margin + Math.random() * Math.max(1, width - margin * 2);
+    // On viewports too narrow for the word, center it instead of letting the
+    // right edge overflow offscreen.
+    const x =
+      width > margin * 2 ? margin + Math.random() * (width - margin * 2) : width / 2;
     const speed = difficulty.fallSpeed * (0.85 + Math.random() * 0.3);
 
     return new Drop(word, x, -CONFIG.drop.fontSize, speed);
