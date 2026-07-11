@@ -14,6 +14,9 @@ export class SubmitForm {
   private root: HTMLDivElement | null = null;
   private errorEl: HTMLParagraphElement | null = null;
   private buttons: HTMLButtonElement[] = [];
+  /** Blocks Enter-key resubmits while a submit is in flight (buttons are
+   *  disabled by setBusy, but the input's Enter handler bypasses them). */
+  private busy = false;
 
   get isOpen(): boolean {
     return this.root !== null;
@@ -67,6 +70,7 @@ export class SubmitForm {
     root.addEventListener('keydown', (e) => e.stopPropagation());
 
     const trySubmit = () => {
+      if (this.busy) return;
       const name = nameInput.value.trim();
       if (!name) {
         this.showError('Please enter a name');
@@ -89,6 +93,7 @@ export class SubmitForm {
   }
 
   setBusy(busy: boolean): void {
+    this.busy = busy;
     for (const b of this.buttons) b.disabled = busy;
   }
 
@@ -101,5 +106,6 @@ export class SubmitForm {
     this.root = null;
     this.errorEl = null;
     this.buttons = [];
+    this.busy = false;
   }
 }
