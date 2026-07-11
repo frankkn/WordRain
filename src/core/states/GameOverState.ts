@@ -89,7 +89,11 @@ export class GameOverState implements State {
   }
 
   onKey(e: KeyboardEvent): void {
-    if (this.form.isOpen) return; // typing a name, not a game command
+    if (this.form.isOpen) {
+      // Focus is outside the form (backdrop click) — still let Esc skip it.
+      if (e.key === 'Escape') this.form.cancel();
+      return;
+    }
     if (e.key === 'Enter') this.game.startRun();
     if (e.key === 'Escape') this.game.setState('menu');
   }

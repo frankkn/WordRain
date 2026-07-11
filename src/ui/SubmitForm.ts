@@ -17,9 +17,15 @@ export class SubmitForm {
   /** Blocks Enter-key resubmits while a submit is in flight (buttons are
    *  disabled by setBusy, but the input's Enter handler bypasses them). */
   private busy = false;
+  private onSkip: (() => void) | null = null;
 
   get isOpen(): boolean {
     return this.root !== null;
+  }
+
+  /** Esc pressed: skip, unless a submit is in flight. */
+  cancel(): void {
+    if (!this.busy) this.onSkip?.();
   }
 
   open(onSubmit: (payload: SubmitPayload) => void, onSkip: () => void): void {
@@ -67,7 +73,10 @@ export class SubmitForm {
     document.body.appendChild(root);
 
     // Keys typed here are form input, not game commands.
-    root.addEventListener('keydown', (e) => e.stopPropagation());
+    root.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Escape') this.cancel();
+    });
 
     const trySubmit = () => {
       if (this.busy) return;
@@ -86,6 +95,7 @@ export class SubmitForm {
     });
     skipBtn.addEventListener('click', onSkip);
 
+    this.onSkip = onSkip;
     this.root = root;
     this.errorEl = error;
     this.buttons = [submitBtn, skipBtn];
@@ -107,5 +117,6 @@ export class SubmitForm {
     this.errorEl = null;
     this.buttons = [];
     this.busy = false;
+    this.onSkip = null;
   }
 }
