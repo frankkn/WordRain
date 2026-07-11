@@ -1,7 +1,9 @@
+/** Looping BGM track under public/, user-provided (generated with Suno). */
+const BGM_FILE = 'audio/RainyNightTyping.mp3';
+
 /**
- * Background music player. Expects a looping track at public/audio/bgm.mp3
- * (user-provided, e.g. generated with Suno). If the file is missing the
- * whole feature silently no-ops — the game runs fine without music.
+ * Background music player. If the track file is missing the whole
+ * feature silently no-ops — the game runs fine without music.
  */
 export class Music {
   private audio: HTMLAudioElement | null;
@@ -9,7 +11,7 @@ export class Music {
   private started = false;
 
   constructor() {
-    const audio = new Audio(`${import.meta.env.BASE_URL}audio/bgm.mp3`);
+    const audio = new Audio(`${import.meta.env.BASE_URL}${BGM_FILE}`);
     audio.loop = true;
     audio.preload = 'auto';
     audio.addEventListener('error', () => {

@@ -17,7 +17,7 @@ A typing game where words fall from the sky like rain. Each raindrop carries a w
 
 ### Background music
 
-Drop a looping track at `public/audio/bgm.mp3` and the game plays it automatically (volume controlled in OPTIONS). No file → no music, everything else works. Suggested Suno prompt:
+The game loops the track at `public/audio/RainyNightTyping.mp3` (path configured at the top of `src/audio/Music.ts`), volume controlled in OPTIONS. No file → no music, everything else works. Suggested Suno prompt:
 
 > Calm ambient instrumental, rainy night atmosphere, soft warm synth pads, gentle piano notes like water droplets, light rain in the background, slow tempo around 70 BPM, no vocals, no drums, meditative and relaxing, background music for a typing game, seamless loop
 
