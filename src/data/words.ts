@@ -1,6 +1,7 @@
 import CLASSIC from './themes/classic';
 import ANIMALS from './themes/animals';
 import FOOD from './themes/food';
+import CODE from './themes/code';
 
 export interface LengthWeights {
   short: number;
@@ -16,17 +17,18 @@ export interface WordPools {
   long: readonly string[];   // 7+ letters
 }
 
-/** Grows as packs land: code / space / fantasy still to come. */
-export type ThemeName = 'classic' | 'animals' | 'food';
+/** Grows as packs land: space / fantasy still to come. */
+export type ThemeName = 'classic' | 'animals' | 'food' | 'code';
 
 export const THEMES: Record<ThemeName, WordPools> = {
   classic: CLASSIC,
   animals: ANIMALS,
   food: FOOD,
+  code: CODE,
 };
 
 /** Cycle order for the OPTIONS row. */
-export const THEME_ORDER: readonly ThemeName[] = ['classic', 'animals', 'food'];
+export const THEME_ORDER: readonly ThemeName[] = ['classic', 'animals', 'food', 'code'];
 
 /**
  * Pick a word for a new drop. Tier is chosen by weight, then words whose
