@@ -3,6 +3,7 @@ import ANIMALS from './themes/animals';
 import FOOD from './themes/food';
 import CODE from './themes/code';
 import SPACE from './themes/space';
+import FANTASY from './themes/fantasy';
 
 export interface LengthWeights {
   short: number;
@@ -18,8 +19,7 @@ export interface WordPools {
   long: readonly string[];   // 7+ letters
 }
 
-/** Grows as packs land: fantasy still to come. */
-export type ThemeName = 'classic' | 'animals' | 'food' | 'code' | 'space';
+export type ThemeName = 'classic' | 'animals' | 'food' | 'code' | 'space' | 'fantasy';
 
 export const THEMES: Record<ThemeName, WordPools> = {
   classic: CLASSIC,
@@ -27,6 +27,7 @@ export const THEMES: Record<ThemeName, WordPools> = {
   food: FOOD,
   code: CODE,
   space: SPACE,
+  fantasy: FANTASY,
 };
 
 /** Cycle order for the OPTIONS row. */
@@ -36,6 +37,7 @@ export const THEME_ORDER: readonly ThemeName[] = [
   'food',
   'code',
   'space',
+  'fantasy',
 ];
 
 /**
