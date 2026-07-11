@@ -10,11 +10,14 @@ const TABS: DifficultyName[] = ['easy', 'medium', 'hard'];
 export class LeaderboardsState implements State {
   private tab = 1;
   private status: BoardStatus = 'unconfigured';
+  /** Bumped on every enter() so stale fetches can't repopulate the cleared cache. */
+  private generation = 0;
   private readonly cache = new Map<DifficultyName, LeaderboardEntry[]>();
 
   constructor(private readonly game: Game) {}
 
   enter(): void {
+    this.generation++;
     this.cache.clear();
     this.tab = Math.max(0, TABS.indexOf(this.game.settings.difficulty));
     this.showTab(this.tab);
@@ -89,12 +92,15 @@ export class LeaderboardsState implements State {
   }
 
   private async load(difficulty: DifficultyName): Promise<void> {
+    const gen = this.generation;
     try {
       const entries = await fetchTop10(difficulty);
+      if (gen !== this.generation) return;
       this.cache.set(difficulty, entries);
       if (this.game.isActive(this) && TABS[this.tab] === difficulty) this.status = 'ready';
     } catch {
-      if (this.game.isActive(this) && TABS[this.tab] === difficulty) this.status = 'error';
+      if (gen === this.generation && this.game.isActive(this) && TABS[this.tab] === difficulty)
+        this.status = 'error';
     }
   }
 }

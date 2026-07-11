@@ -16,11 +16,14 @@ export class GameOverState implements State {
   private entries: LeaderboardEntry[] = [];
   private highlight = -1; // player's row after submitting
   private submitted = false;
+  /** Bumped on every enter() so stale fetches from a previous run are discarded. */
+  private generation = 0;
   private readonly form = new SubmitForm();
 
   constructor(private readonly game: Game) {}
 
   enter(): void {
+    this.generation++;
     this.entries = [];
     this.highlight = -1;
     this.submitted = false;
@@ -84,16 +87,18 @@ export class GameOverState implements State {
   }
 
   private async loadBoard(offerSubmit: boolean): Promise<void> {
+    const gen = this.generation;
     try {
       const entries = await fetchTop10(this.game.runDifficulty);
-      if (!this.game.isActive(this)) return; // player already moved on
+      // Player already moved on (or died again — this fetch is from an old run).
+      if (gen !== this.generation || !this.game.isActive(this)) return;
       this.entries = entries;
       this.status = 'ready';
       if (offerSubmit && !this.submitted && qualifies(this.game.score, entries)) {
         this.openForm();
       }
     } catch {
-      if (this.game.isActive(this)) this.status = 'error';
+      if (gen === this.generation && this.game.isActive(this)) this.status = 'error';
     }
   }
 
