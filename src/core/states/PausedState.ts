@@ -12,6 +12,8 @@ export class PausedState implements State {
   }
 
   onKey(e: KeyboardEvent): void {
+    // Without the repeat guard, holding Esc bounces between pause and play.
+    if (e.repeat) return;
     if (e.key === 'Escape') this.game.setState('playing');
   }
 }

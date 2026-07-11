@@ -45,6 +45,8 @@ export class PlayingState implements State {
 
   onKey(e: KeyboardEvent): void {
     const g = this.game;
+    // Held-key auto-repeat and shortcut chords (Ctrl+C etc.) are not typing.
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === 'Escape') {
       g.setState('paused');
       return;
