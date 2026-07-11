@@ -1,6 +1,7 @@
 import { CONFIG, type DifficultyName } from '../config';
 
 export interface LeaderboardEntry {
+  id?: string; // uuid, present on rows fetched from the server
   name: string;
   country: string; // ISO 3166-1 alpha-2, uppercase
   score: number;
@@ -26,7 +27,7 @@ function headers(): Record<string, string> {
 export async function fetchTop10(difficulty: DifficultyName): Promise<LeaderboardEntry[]> {
   const url =
     `${BASE_URL}/rest/v1/leaderboard` +
-    `?select=name,country,score,difficulty&difficulty=eq.${difficulty}` +
+    `?select=id,name,country,score,difficulty&difficulty=eq.${difficulty}` +
     `&order=score.desc,created_at.asc&limit=${CONFIG.leaderboard.size}`;
   const res = await fetch(url, {
     headers: headers(),
@@ -36,14 +37,17 @@ export async function fetchTop10(difficulty: DifficultyName): Promise<Leaderboar
   return res.json();
 }
 
-export async function submitScore(entry: LeaderboardEntry): Promise<void> {
+/** Inserts the entry and returns the new row's id (for exact highlighting). */
+export async function submitScore(entry: Omit<LeaderboardEntry, 'id'>): Promise<string | null> {
   const res = await fetch(`${BASE_URL}/rest/v1/leaderboard`, {
     method: 'POST',
-    headers: { ...headers(), Prefer: 'return=minimal' },
+    headers: { ...headers(), Prefer: 'return=representation' },
     body: JSON.stringify(entry),
     signal: AbortSignal.timeout(CONFIG.leaderboard.timeoutMs),
   });
   if (!res.ok) throw new Error(`Score submit failed: ${res.status}`);
+  const rows = (await res.json()) as Array<{ id?: string }>;
+  return rows[0]?.id ?? null;
 }
 
 /** On the board if it isn't full yet, otherwise must strictly beat 10th place. */

@@ -65,7 +65,15 @@ export class GameOverState implements State {
       if (this.status === 'loading') {
         r.centerText('Loading…', listTop + 24, 14);
       } else if (this.status === 'error') {
-        r.centerText('World top 10 unavailable', listTop + 24, 14, { color: '#ff9f9f' });
+        // A failed reload right after a successful submit shouldn't read as
+        // "your score got lost".
+        if (this.submitted) {
+          r.centerText('Score submitted! Board unavailable right now', listTop + 24, 14, {
+            color: '#ffd166',
+          });
+        } else {
+          r.centerText('World top 10 unavailable', listTop + 24, 14, { color: '#ff9f9f' });
+        }
       } else if (this.entries.length === 0) {
         r.centerText('No scores yet — be the first!', listTop + 24, 14);
       } else {
@@ -106,8 +114,9 @@ export class GameOverState implements State {
     this.form.open(
       async ({ name, country }) => {
         this.form.setBusy(true);
+        const gen = this.generation;
         try {
-          await submitScore({
+          const id = await submitScore({
             name,
             country,
             score: this.game.score,
@@ -115,11 +124,13 @@ export class GameOverState implements State {
           });
           this.submitted = true;
           this.form.close();
+          // Once the form is closed the player can restart; don't let this
+          // stale continuation touch the next run's game-over screen.
+          if (gen !== this.generation) return;
           this.status = 'loading';
           await this.loadBoard(false);
-          this.highlight = this.entries.findIndex(
-            (e) => e.name === name && e.country === country && e.score === this.game.score,
-          );
+          if (gen !== this.generation) return;
+          this.highlight = id === null ? -1 : this.entries.findIndex((e) => e.id === id);
         } catch {
           this.form.setBusy(false);
           this.form.showError('Submit failed — try again');
