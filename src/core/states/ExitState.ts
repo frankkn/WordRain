@@ -22,7 +22,10 @@ export class ExitState implements State {
     });
   }
 
-  onKey(_e: KeyboardEvent): void {
+  onKey(e: KeyboardEvent): void {
+    // Key repeat from the held Enter that picked EXIT must not dismiss the
+    // screen instantly, and a lone modifier press isn't "any key" either.
+    if (e.repeat || ['Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) return;
     this.game.sound.menuBack();
     this.game.setState('menu');
   }
