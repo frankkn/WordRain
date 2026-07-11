@@ -110,7 +110,12 @@ export function flagEmoji(code: string): string {
 
 /** Best-effort default from the browser locale, e.g. 'zh-TW' → 'TW'. */
 export function guessCountry(): string {
-  const region = new Intl.Locale(navigator.language).region;
-  if (region && COUNTRIES.some(([code]) => code === region)) return region;
+  try {
+    const region = new Intl.Locale(navigator.language).region;
+    if (region && COUNTRIES.some(([code]) => code === region)) return region;
+  } catch {
+    // Some webviews report a malformed navigator.language, which makes
+    // Intl.Locale throw — fall through to the default.
+  }
   return 'US';
 }
