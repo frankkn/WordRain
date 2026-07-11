@@ -72,6 +72,10 @@ export class Game {
     this.settings.muted = !this.settings.muted;
     this.muteButton.sync(this.settings.muted);
     this.applySettings();
+    // The click is a user gesture too — without this, clicking the button
+    // on a fresh page toggles nothing audible because audio never started.
+    this.sound.unlock();
+    this.music.start();
   }
 
   /** Persist the (already mutated) settings and apply the audio volumes. */

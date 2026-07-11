@@ -19,5 +19,6 @@ export class MuteButton {
     this.button.textContent = muted ? '🔇' : '🔊';
     this.button.title = muted ? 'Unmute' : 'Mute';
     this.button.setAttribute('aria-label', this.button.title);
+    this.button.classList.toggle('muted', muted);
   }
 }
