@@ -10,7 +10,7 @@ export class PlayingState implements State {
     const g = this.game;
     g.difficulty.update(dt);
 
-    const spawned = g.spawner.update(dt, g.difficulty, g.drops, g.renderer.width);
+    const spawned = g.spawner.update(dt, g.difficulty, g.drops, g.renderer.width, g.runTheme);
     if (spawned) g.drops.push(spawned);
 
     for (const d of g.drops) d.update(dt);

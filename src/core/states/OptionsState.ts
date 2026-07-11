@@ -1,8 +1,9 @@
 import type { DifficultyName } from '../../config';
+import { THEME_ORDER } from '../../data/words';
 import type { Game } from '../Game';
 import type { State } from './State';
 
-const ROWS = ['MUSIC', 'SOUND', 'DIFFICULTY'];
+const ROWS = ['MUSIC', 'SOUND', 'DIFFICULTY', 'THEME'];
 const DIFF_ORDER: DifficultyName[] = ['easy', 'medium', 'hard'];
 
 export class OptionsState implements State {
@@ -22,8 +23,9 @@ export class OptionsState implements State {
       `${g.settings.music}/10`,
       `${g.settings.sound}/10`,
       g.settings.difficulty.toUpperCase(),
+      g.settings.theme.toUpperCase(),
     ];
-    const yTop = r.height * 0.34;
+    const yTop = r.height * 0.3;
     const rowH = 52;
     const { ctx } = r;
     ctx.save();
@@ -70,10 +72,16 @@ export class OptionsState implements State {
           g.settings.sound = Math.max(0, Math.min(10, g.settings.sound + dir));
           g.applySettings();
           g.sound.hit(); // preview blip at the new level
-        } else {
+        } else if (this.selected === 2) {
           const idx = DIFF_ORDER.indexOf(g.settings.difficulty);
           g.settings.difficulty =
             DIFF_ORDER[(idx + dir + DIFF_ORDER.length) % DIFF_ORDER.length];
+          g.applySettings();
+          g.sound.menuMove();
+        } else {
+          const idx = THEME_ORDER.indexOf(g.settings.theme);
+          g.settings.theme =
+            THEME_ORDER[(idx + dir + THEME_ORDER.length) % THEME_ORDER.length];
           g.applySettings();
           g.sound.menuMove();
         }

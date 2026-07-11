@@ -4,6 +4,7 @@ import { Sound } from '../audio/Sound';
 import { Drop } from '../entities/Drop';
 import { Particle } from '../entities/Particle';
 import { Renderer, type RainStreak } from '../render/Renderer';
+import type { ThemeName } from '../data/words';
 import { loadHighScore, saveHighScore } from '../storage/highscore';
 import { loadSettings, saveSettings, type Settings } from '../storage/settings';
 import { MuteButton } from '../ui/MuteButton';
@@ -39,6 +40,8 @@ export class Game {
   time = 0; // global clock, drives the water wave
   /** Snapshotted at run start so mid-game option changes can't mislabel the run. */
   runDifficulty: DifficultyName = 'medium';
+  /** Word theme, also snapshotted at run start for mid-run consistency. */
+  runTheme: ThemeName = 'classic';
   /** Countdown for the red flash after the locked target drowns. */
   lockLostFlash = 0;
 
@@ -117,6 +120,7 @@ export class Game {
     this.newBest = false;
     this.lockLostFlash = 0;
     this.runDifficulty = this.settings.difficulty;
+    this.runTheme = this.settings.theme;
     this.difficulty.reset(DIFFICULTIES[this.runDifficulty]);
     this.spawner.reset();
     this.typing.reset();
@@ -158,7 +162,10 @@ export class Game {
     if (this.lockLostFlash > 0) {
       r.flashRed(this.lockLostFlash / CONFIG.typing.lockLostFlashSeconds);
     }
-    r.drawHUD(this.score, this.best, this.combo, this.runDifficulty.toUpperCase());
+    const theme: string = this.runTheme;
+    const hudLabel =
+      this.runDifficulty.toUpperCase() + (theme === 'classic' ? '' : ` · ${theme.toUpperCase()}`);
+    r.drawHUD(this.score, this.best, this.combo, hudLabel);
   }
 
   private frame = (t: number): void => {

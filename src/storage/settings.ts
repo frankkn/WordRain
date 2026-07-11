@@ -1,14 +1,22 @@
 import type { DifficultyName } from '../config';
+import { THEME_ORDER, type ThemeName } from '../data/words';
 
 export interface Settings {
   music: number; // 0–10
   sound: number; // 0–10
   difficulty: DifficultyName;
+  theme: ThemeName;
   muted: boolean;
 }
 
 const KEY = 'wordrain.settings';
-const DEFAULTS: Settings = { music: 7, sound: 7, difficulty: 'medium', muted: false };
+const DEFAULTS: Settings = {
+  music: 7,
+  sound: 7,
+  difficulty: 'medium',
+  theme: 'classic',
+  muted: false,
+};
 
 function clampVolume(v: unknown): number {
   const n = typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : 7;
@@ -27,6 +35,9 @@ export function loadSettings(): Settings {
         parsed.difficulty === 'easy' || parsed.difficulty === 'hard'
           ? parsed.difficulty
           : 'medium',
+      theme: THEME_ORDER.includes(parsed.theme as ThemeName)
+        ? (parsed.theme as ThemeName)
+        : 'classic',
       muted: parsed.muted === true,
     };
   } catch {
