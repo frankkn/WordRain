@@ -37,7 +37,11 @@ The 🔊 button in the top-right corner mutes everything in one click.
 
 ## Options
 
-**MUSIC** volume, **SOUND** volume, and **DIFFICULTY** — adjusted with arrow keys, applied instantly, and remembered between visits. Your best score is saved locally too.
+**MUSIC** volume, **SOUND** volume, **DIFFICULTY**, and **THEME** — adjusted with arrow keys, applied instantly, and remembered between visits. Your best score is saved locally too.
+
+### Word themes
+
+Six word packs to type through: **CLASSIC** (rainy-night mix), **ANIMALS**, **FOOD**, **CODE** (yes, `npm` and `refactor` count), **SPACE**, and **FANTASY**. Themes only change the words — difficulty and leaderboards stay the same.
 
 ## Tech
 

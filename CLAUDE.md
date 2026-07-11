@@ -71,6 +71,7 @@ src/
 | 14 | 分難度排行榜:DB migration、API 帶 difficulty、LEADERBOARDS 頁(←/→ 切 EASY/MEDIUM/HARD) | ✅(migration-002 已執行,正式站分榜驗證通過) |
 | 15 | 手感改善:水面上方固定打字指示器、鎖定目標落水回饋(紅閃+音效)與 0.35s 誤鎖保護 | ✅ |
 | 16 | 字表擴充:三級各 100+(short 170 / medium 199 / long 189),雨夜主題混高頻詞,降低重複感 | ✅ |
+| 17 | 主題包:themes/ 資料層(CLASSIC/ANIMALS/FOOD/CODE/SPACE/FANTASY)、OPTIONS THEME 列、runTheme 快照、驗證腳本 `scripts/check-words.mjs` 進 repo | ✅ |
 
 ### Phase 11–14 需求細節(2026-07-11 使用者提出)
 
@@ -85,15 +86,9 @@ src/
   需在 Supabase SQL Editor 手動跑);EASY/MEDIUM/HARD 三張榜互不相干;舊資料自動歸 medium
 - **EXIT**:先試 `window.close()`(瀏覽器多半會擋),fallback 顯示告別畫面,按任意鍵回選單
 
-### 未來可能的方向(未排程)
+主題包(phase 17)備忘:字表在 `src/data/themes/`(一包一檔),新增主題 = 新檔案 + `words.ts` 註冊(ThemeName / THEMES / THEME_ORDER);品質標準「各級 100+、字首分散、全小寫 a–z」由 `node scripts/check-words.mjs` 把關(CODE 包短字接受縮寫為特例,使用者核可)。**排行榜不分主題**(定案):主題只影響字面不影響難度。
 
-- **字表主題包(THEME PACKS)**(2026-07-11 討論定案,後續排程):
-  - **首發清單(使用者已選定)**:`ANIMALS` 動物、`FOOD` 食物、`CODE` 程式術語、`SPACE` 太空、`FANTASY` 奇幻;現有字表改名 **`CLASSIC`** 作為預設,共六個選項。
-  - **CODE 包政策**:短字級距接受縮寫(css、npm、api、json、http…),使用者已核可 — 風味更對且短字才填得滿。
-  - **SPACE / FANTASY 注意**:短字級距字源較薄,需混填泛用詞(sky、dust、ray / axe、bow、gem)。
-  - 選擇 UI 放選單或 OPTIONS;資料層現成:`words.ts` 已按 short/medium/long 分級,新增主題 = 多一組 POOLS + 選擇 UI。
-  - 每包品質標準:「各級 100+、字首分散、全小寫 a–z」(驗證腳本模式見 phase 16)。
-  - **排行榜不分主題**(定案):主題只影響字面不影響難度,分榜會稀釋玩家數。
+### 未來可能的方向(未排程)
 - 行動裝置輸入(虛擬鍵盤 / 觸控)
 - 單字母模式(初學者用)
 
